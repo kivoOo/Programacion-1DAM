@@ -1,0 +1,10 @@
+modelo/Cliente.class
+com/mycompany/appbancoweb/JAXRSConfiguration.class
+DAO/DAOManager.class
+com/mycompany/appbancoweb/resources/JavaEE8Resource.class
+modelo/Cuenta.class
+modelo/GestionCuentas.class
+DAO/DAOUsuarioSQL.class
+DAO/DAOUsuario.class
+modelo/Usuario.class
+modelo/Cuenta$Movimiento.class
