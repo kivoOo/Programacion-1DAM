@@ -7,22 +7,18 @@ import java.util.Scanner;
 
 public class main {
 
+    static final float COMISION = 0.25f;
     static Scanner S = new Scanner(System.in);
     public static void main(String[] args) {
 
         int op = 0;
         String teclaContinuar;
         boolean numCuentaValido = false;
-        var gestion = new GestionCuentas();
+        var gestion = insertaDatos();
         Date fecha;
         float interes;
         int pos = -1; //variable para saber posiciones de cuentas en array
-        Cliente cliente1 = new Cliente("Carlos","Barroso Moriana","77322948F","1234",
-                "carlosbarrosomoriana@gmail.com",fecha = new Date());
-        Cliente cliente2 = new Cliente("Pepe","Lopez Caro","12345678Z","12345",
-                "pepe@pepe",fecha = new Date());
-        gestion.añadirCuenta(cliente1,1.5f);
-        gestion.añadirCuenta(cliente2, 2.0f);
+
         while (op < 9  ) {
             op = 0;
             System.out.println("\nBienvenido al banco Docente");
@@ -51,7 +47,7 @@ public class main {
                 }
             }
             switch (op){
-                case 1: //Creacion de cuentas
+                case 1: //Creacion de cuentas. IMPORTANTE: COMPROBAR SI EL CLIENTE YA EXISTE
                     System.out.print("Por favor introduzca el DNI del cliente: ");
                     String dni = S.nextLine().toUpperCase();
                     interes = -1;
@@ -207,7 +203,7 @@ public class main {
                                             System.out.println("¿Se le aplica la comisión de 0.5? S/N");
                                             comision = S.nextLine().toUpperCase();
                                             if (comision.equalsIgnoreCase("S"))
-                                                gestion.getCuenta(gestion.buscarCuenta(numCuenta)).reintegro(retirada,0.5f);
+                                                gestion.getCuenta(gestion.buscarCuenta(numCuenta)).reintegro(retirada,COMISION);
                                             else
                                                 gestion.getCuenta(gestion.buscarCuenta(numCuenta)).reintegro(retirada);
                                             System.out.println("La retirada ha sido ejecutada con éxito.");
@@ -271,7 +267,7 @@ public class main {
                                                 System.out.println("¿Se le aplica la comisión de 0.5? S/N");
                                                 comision = S.nextLine().toUpperCase();
                                                 if (comision.equalsIgnoreCase("S")) {
-                                                    gestion.getCuenta(gestion.buscarCuenta(numCuentaOrigen)).reintegro(traspaso, 0.5f);
+                                                    gestion.getCuenta(gestion.buscarCuenta(numCuentaOrigen)).reintegro(traspaso, COMISION);
                                                     gestion.getCuenta(gestion.buscarCuenta(numCuentaDestino)).ingreso(traspaso);
                                                 } else {
                                                     gestion.getCuenta(gestion.buscarCuenta(numCuentaOrigen)).reintegro(traspaso);
@@ -296,11 +292,10 @@ public class main {
                     cuentasenRojos = gestion.buscarCuentasenRojos();
                     System.out.println("\nLas siguientes cuentas bancarias están en números rojos: ");
                     System.out.println("**************************************");
-                    for (Cuenta c:cuentasenRojos) {
+                    for (Cuenta c: cuentasenRojos) {
                         pintarCuenta(c);
                         System.out.println("**************************************");
                     }
-
                     System.out.println("Pulse enter para continuar........");
                     teclaContinuar = S.nextLine();
                     break;
@@ -428,12 +423,15 @@ public class main {
                     else{
                         pintarCliente(gestion.buscarCliente(dni));
                         System.out.println();
-                        System.out.println("Cuentas a nombre de este cliente: ");
-                        System.out.println();
                         cuentasCliente = gestion.buscarCuentasCliente(dni);
-                        for (Cuenta c:cuentasCliente) {
-                            pintarCuenta(c);
-                            System.out.println("**************************************");
+                        if (cuentasCliente.isEmpty()) System.out.println("Este cliente no tiene cuentas abiertas en nuestro banco");
+                        else{
+                            System.out.println("Cuentas a nombre de este cliente: ");
+                            System.out.println();
+                            for (Cuenta c:cuentasCliente) {
+                                pintarCuenta(c);
+                                System.out.println("**************************************");
+                            }
                         }
                     }
                 }
@@ -443,7 +441,7 @@ public class main {
                 ArrayList<Cliente> clientes = new ArrayList<>();
                 System.out.print("Introduza el término para buscar: ");
                 String texto = S.nextLine();
-                clientes = gestion.buscarClientesTexto(texto);
+                clientes = gestion.buscarClientesTextov2(texto);
                 System.out.println("\nHemos encontrado los siguientes clientes: ");
                 System.out.println("**************************************");
                 for (Cliente c:clientes) {
@@ -463,8 +461,7 @@ public class main {
                 System.out.println("No existe ninguna cuenta con esa numeración");
             }else{
                 int pos = gestion.buscarCuenta(numCuenta);
-                Cuenta c = gestion.getCuenta(pos);
-                pintarCuenta(c);
+                pintarCuenta(gestion.getCuenta(pos));
             }
         }catch (Exception e){
             System.out.println("El número de cuenta es erróneo");
@@ -500,6 +497,18 @@ public class main {
         System.out.println("Móvil: " + c.getNumMovil());
         System.out.println("Email: " + c.getEmail());
         System.out.println("Fecha de nacimiento" + c.getFechNac());
+    }
+
+    public static GestionCuentas insertaDatos(){
+        GestionCuentas gestion = new GestionCuentas();
+        Date fecha;
+        Cliente cliente1 = new Cliente("Carlos","Barroso Moriana","77322948F","1234",
+                "carlosbarrosomoriana@gmail.com",fecha = new Date());
+        Cliente cliente2 = new Cliente("Pepe","Lopez Caro","12345678Z","12345",
+                "pepe@pepe",fecha = new Date());
+        gestion.añadirCuenta(cliente1,1.5f);
+        gestion.añadirCuenta(cliente2, 2.0f);
+        return gestion;
     }
 }
 
