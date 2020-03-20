@@ -10,6 +10,7 @@ public class Cuenta {
     private float interesAnual;
     private ArrayList<Movimiento> movimientos;
 
+
     //Constructor
     public Cuenta(long numero, Cliente titular, float interesAnual){
         this.numero = numero;
@@ -64,7 +65,7 @@ public class Cuenta {
     }
     public void ingreso (float cantidad ){
         saldo +=cantidad;
-        movimientos.add(new Movimiento(new Date(),'I',cantidad,saldo));
+        movimientos.add(new Movimiento(new Date() /*TIMESTAMP*/,'I',cantidad,saldo));
     }
     public void reintegro (float cantidad){
         saldo -=cantidad;
@@ -74,7 +75,7 @@ public class Cuenta {
         float totalReintegro;
         totalReintegro = cantidad + comision;
         saldo -=totalReintegro;
-        movimientos.add(new Movimiento(new Date(),'R',cantidad,saldo));
+        movimientos.add(new Movimiento(new Date(),'R',totalReintegro,saldo));
     }
     public void ingresoInteresMes(){
         float interes = interesAnual * saldo / 1200;
@@ -84,7 +85,7 @@ public class Cuenta {
     public boolean enRojos(){return (saldo<0);}
     public static float eurosAPesetas (float euros){return euros*166.386f;}
 
-    static public class Movimiento{ //Como privada y así no es visible desde el exterior
+    public class Movimiento{ //Como privada y así no es visible desde el exterior
         Date fecha;
         char tipo;
         float importe,saldo;

@@ -6,13 +6,14 @@ import modelo.Cuenta;
 import java.util.ArrayList;
 
 public class GestionCuentas {
-    private ArrayList<Cuenta> cuentas;
+    private ArrayList<Cuenta> cuentas; //TODAS LAS CUENTAS DEL BANCO
 
     //Constructor
     public GestionCuentas(){
         this.cuentas = new ArrayList<Cuenta>();
     }
-//Getters
+
+    //Getters
     public ArrayList<Cuenta> getCuentas() {
         return cuentas;
     }
@@ -20,7 +21,8 @@ public class GestionCuentas {
     public Cuenta getCuenta(int pos){
         return cuentas.get(pos);
     }
-//Otros métodos
+
+    //Otros métodos
 
     public int contarCuentas(){
         return cuentas.size();
@@ -71,13 +73,14 @@ public class GestionCuentas {
         }
         return null;
     }
+
     public ArrayList<Cuenta> buscarCuentasCliente(String dni){
-        ArrayList<Cuenta> cuentasCliente = new ArrayList<Cuenta>(); //Como mucho un cliente puede tener 10 cuentas
+        ArrayList<Cuenta> cuentasCliente = new ArrayList<Cuenta>();
         Cuenta cuentaAux;
         for (Cuenta c:this.cuentas) {
             if (c.getTitular().getDni().equalsIgnoreCase(dni)){
-                cuentaAux = new Cuenta(c);
-                cuentasCliente.add(cuentaAux);
+                cuentaAux = new Cuenta(c); //ESTAMOS METIENDO COPIAS DE LAS CUENTAS
+                cuentasCliente.add(c);
             }
         }
         return cuentasCliente;
@@ -102,14 +105,40 @@ public class GestionCuentas {
     }
 
     public ArrayList<Cliente> buscarClientesTexto(String texto){
-        ArrayList<Cliente> clientes = new ArrayList<Cliente>(); //Como mucho un cliente puede tener 10 cuentas
+        //ESTE METODO DEVUELVE TANTOS CIENTES COMO CUENTAS EXISTEN
+        ArrayList<Cliente> clientes = new ArrayList<Cliente>();
         Cliente clienteAux;
         for (Cuenta c: cuentas) {
-            if ((c.getTitular().getNombre().toUpperCase().indexOf(texto.toUpperCase()) != -1)
-            || (c.getTitular().getApellidos().toUpperCase().indexOf(texto.toUpperCase()) != -1)){ //Compruebo si el texto
+            if ((c.getTitular().getNombre().toUpperCase().contains(texto.toUpperCase()))
+            || (c.getTitular().getApellidos().toUpperCase().contains(texto.toUpperCase()))){ //Compruebo si el texto
                 //esta en el nombre o en los apellidos
+
                 clienteAux = new Cliente(c.getTitular());
                 clientes.add(clienteAux);
+            }
+        }
+        return clientes;
+    }
+
+    public ArrayList<Cliente> buscarClientesTextov2 (String texto){
+        //ESTE METODO DEVUELVE LOS CLIENTES EXISTENTES SIN REPETIR CLIENTES SI TIENEN VARIAS CUENTAS
+        ArrayList<Cliente> clientes = new ArrayList<Cliente>();
+        Cliente clienteAux;
+        boolean encontrado;
+        for (Cuenta c: cuentas) {
+            if ((c.getTitular().getNombre().toUpperCase().contains(texto.toUpperCase()))
+                    || (c.getTitular().getApellidos().toUpperCase().contains(texto.toUpperCase()))){ //Compruebo si el texto
+                encontrado = false;
+                //esta en el nombre o en los apellidos
+                clienteAux = new Cliente(c.getTitular());
+                //Antes de añadir el cliente a "clientes", debo comprobar si ya está añadido
+                for (Cliente c2: clientes){
+                    if (c2.getDni().equals(clienteAux.getDni())) {
+                        encontrado = true;
+                        break;
+                    }
+                }
+                if (!encontrado) clientes.add(clienteAux);
             }
         }
         return clientes;

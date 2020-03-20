@@ -23,6 +23,16 @@ public class Cliente {
         this.dni = dni;
     }
 
+    //Constructor copia
+    public Cliente (Cliente cliente){
+        this.nombre = cliente.getNombre();
+        this.apellidos = cliente.getApellidos();
+        this.dni = cliente.dni;
+        this.numMovil = cliente.getNumMovil();
+        this.email = cliente.getEmail();
+        this.fechNac = cliente.getFechNac();
+    }
+
     //Setter
     public void setDni(String dni) {
         this.dni = dni;
@@ -62,7 +72,6 @@ public class Cliente {
     public String getNumMovil() {
         return numMovil;
     }
-
 
 }
 
